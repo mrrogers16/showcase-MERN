@@ -1,22 +1,19 @@
 import mongoose from 'mongoose';
 
-interface MongooseCache {
-    conn: typeof mongoose | null;
-}
+type MongooseCache = { conn: typeof mongoose | null };
 
-declare global {
-    // Safe declaration so we don't overwrite
-    var mongooseCache: MongooseCache | undefined;
-}
+// Extend globalThis inline (this is TypeScript-legal and ESLint-safe)
+const globalCache = globalThis as typeof globalThis & {
+    mongooseCache?: MongooseCache;
+};
 
-const cached: MongooseCache = global.mongooseCache || { conn: null };
+const cached: MongooseCache = globalCache.mongooseCache || { conn: null };
 
-export async function dbConnect() 
-{
+export async function dbConnect() {
     if (cached.conn) return cached.conn;
 
     cached.conn = await mongoose.connect(process.env.MONGODB_URI!);
-    global.mongooseCache = cached;
+    globalCache.mongooseCache = cached;
 
     return cached.conn;
 }
