@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/mongoose';
-import Project from '@/models/Project';
+import { dbConnect } from '@/app/lib/mongoose';
+import Project from '@/app/models/Project';
 
-export async function GET() 
-{
-    try 
-    {
+export async function GET() {
+    try {
         await dbConnect();
 
         // Optional: fetch all projects just to test query
@@ -16,9 +14,8 @@ export async function GET()
             count: projects.length,
             projects,
         });
-    } 
-    catch (error) 
-    {
+    }
+    catch (error) {
         console.error('[MongoDB Error]', error);
         return NextResponse.json({ status: 'fail', error: (error as Error).message }, { status: 500 });
     }
