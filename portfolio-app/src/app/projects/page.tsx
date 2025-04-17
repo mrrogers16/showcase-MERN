@@ -1,7 +1,7 @@
 import { getRepos } from "@/app/lib/github";
 import RepoGrid     from "@/app/components/RepoGrid";
 
-export const revalidate = 60 * 60 * 6;   // 6 h ISR
+export const revalidate = 21600;   // 6 h ISR
 
 export default async function ProjectsPage()
 {

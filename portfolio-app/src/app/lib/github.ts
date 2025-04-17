@@ -10,6 +10,8 @@ const octo = new Octokit(
     auth : process.env.GITHUB_TOKEN         // set this in Vercel → Settings
 });
 
+type OctokitRepo = Awaited<ReturnType<typeof octo.repos.listForUser>>["data"][number];
+
 // ───────────────────────────────────────────────────────────────────────────────
 // RepoSafe: guarantees numeric fields are never undefined
 // ───────────────────────────────────────────────────────────────────────────────
@@ -28,7 +30,7 @@ export type RepoSafe =
 // ───────────────────────────────────────────────────────────────────────────────
 // Convert Octokit repo → RepoSafe
 // ───────────────────────────────────────────────────────────────────────────────
-function toSafe(repo: any): RepoSafe
+function toSafe(repo: OctokitRepo): RepoSafe
 {
     return {
         name             : repo.name,
@@ -73,7 +75,7 @@ export async function getRepos(
 
     const perPage = 100;
     let   page    = 1;
-    let   repos   : RepoSafe[] = [];
+    const   repos   : RepoSafe[] = [];
 
     while (true)
     {
