@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.15.1",
+    "@octokit/rest": "^21.1.1",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "xss": "^1.0.15"
   },
   "devDependencies": {
