@@ -1,27 +1,25 @@
 import { Octokit } from "@octokit/rest";
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic"; // force revalidation on every request
 
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 });
 
 type PageProps = {
-    params: { projectName: string };
+    params: Promise<{ projectName: string }>;
 };
 
-export default async function ProjectDetailPage({ params }: PageProps)
-{
-    const { projectName } = params;
+export default async function ProjectDetailPage({ params }: PageProps) {
+    const { projectName } = await params;
     const owner = process.env.NEXT_PUBLIC_GITHUB_USER as string;
 
-    if (!owner || !process.env.GITHUB_TOKEN)
-    {
+    if (!owner || !process.env.GITHUB_TOKEN) {
         console.error("Missing GitHub credentials in environment variables.");
         return notFound();
     }
 
-    try
-    {
+    try {
         const { data: repo } = await octokit.repos.get({
             owner,
             repo: projectName,
@@ -29,8 +27,7 @@ export default async function ProjectDetailPage({ params }: PageProps)
 
         let readmeContent = "No README available.";
 
-        try
-        {
+        try {
             const { data: readme } = await octokit.repos.getReadme({
                 owner,
                 repo: projectName,
@@ -39,8 +36,7 @@ export default async function ProjectDetailPage({ params }: PageProps)
             const buff = Buffer.from(readme.content, "base64");
             readmeContent = buff.toString("utf-8");
         }
-        catch
-        {
+        catch {
             // Silent fallback if no README found
         }
 
@@ -60,8 +56,7 @@ export default async function ProjectDetailPage({ params }: PageProps)
             </main>
         );
     }
-    catch (error)
-    {
+    catch (error) {
         console.error("Error loading repo:", error);
         return notFound();
     }
