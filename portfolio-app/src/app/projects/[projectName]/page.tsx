@@ -1,6 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic"; // force revalidation on every request
+export const dynamicParams = true;
 
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
@@ -9,6 +10,10 @@ const octokit = new Octokit({
 type PageProps = {
     params: Promise<{ projectName: string }>;
 };
+
+export async function generateStaticParams() {
+    return [];
+}
 
 export default async function ProjectDetailPage({ params }: PageProps) {
     const { projectName } = await params;
@@ -60,4 +65,5 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         console.error("Error loading repo:", error);
         return notFound();
     }
+
 }
